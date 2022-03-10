@@ -5,12 +5,16 @@ import (
 	"time"
 )
 
+const DateFormat = "2006-01-02"
+const TimeFormat = "15:04:05"
+const DateTimeFormat = "2006-01-02 15:04:05"
+
 type TimeGroup struct {
 	Dates            []time.Time
 	DatesFilterType  string
 	DatesFilterFrame string
 	TimeRange        []string
-	DaysOfWeek       []int
+	DaysOfWeek       []string
 	DueDateEndTime   string
 }
 
@@ -22,8 +26,8 @@ func IsDateInTimeGroup(date time.Time, timeGroup TimeGroup) (bool, error) {
 	//test time
 	if len(timeGroup.TimeRange) > 1 {
 		fromTime := timeGroup.TimeRange[0] + ":00"
-		toTime := timeGroup.TimeRange[1] + ":00"
-		curTime := date.Format("15:04:05")
+		toTime := timeGroup.TimeRange[1] + ":59"
+		curTime := date.Format(TimeFormat)
 		ok, err := OnlyTimeWithinRange(fromTime, toTime, curTime)
 		if err != nil {
 			return false, err
@@ -47,10 +51,11 @@ func IsDateInTimeGroup(date time.Time, timeGroup TimeGroup) (bool, error) {
 
 	//test date range
 	if timeGroup.DatesFilterType == "range" && len(timeGroup.Dates) > 1 {
-		fromDate := timeGroup.Dates[0].Format("2006-01-02")
-		toDate := timeGroup.Dates[1].Format("2006-01-02")
-		dateF := dateFilter.Format("2006-01-02")
-		ok, err := OnlyDateWithinRange(fromDate, toDate, dateF)
+
+		fromDate := timeGroup.Dates[0].Format(DateFormat)
+		toDate := timeGroup.Dates[1].Format(DateFormat)
+		dateF := dateFilter.Format(DateFormat)
+		ok, err := OnlyDateWithinRange(dateF, fromDate, toDate)
 		if err != nil {
 			return false, err
 		}
@@ -77,7 +82,7 @@ func IsDateInTimeGroup(date time.Time, timeGroup TimeGroup) (bool, error) {
 	if len(timeGroup.DaysOfWeek) > 0 {
 		found := false
 		for _, w := range timeGroup.DaysOfWeek {
-			if dateFilter.Weekday() == time.Weekday(w) {
+			if dateFilter.Weekday().String() == w {
 				found = true
 				break
 			}
@@ -91,7 +96,7 @@ func IsDateInTimeGroup(date time.Time, timeGroup TimeGroup) (bool, error) {
 }
 
 func getShiftDate(date time.Time, dueDateEndTime string) (time.Time, error) {
-	curTime := date.Format("15:04:05")
+	curTime := date.Format(TimeFormat)
 	ok, err := OnlyTimeWithinRange("00:00:00", dueDateEndTime, curTime)
 	if err != nil {
 		return time.Time{}, err
@@ -103,33 +108,33 @@ func getShiftDate(date time.Time, dueDateEndTime string) (time.Time, error) {
 	}
 }
 
-func OnlyDateWithinRange(fromDate, toDate, curDate string) (bool, error) {
-	from, err := time.Parse("2006-01-02", fromDate)
+func OnlyDateWithinRange(curDate, fromDate, toDate string) (bool, error) {
+	from, err := time.Parse(DateFormat, fromDate)
 	if err != nil {
 		return false, err
 	}
-	to, err := time.Parse("2006-01-02", toDate)
+	to, err := time.Parse(DateFormat, toDate)
 	if err != nil {
 		return false, err
 	}
-	date, err := time.Parse("2006-01-02", curDate)
+	date, err := time.Parse(DateFormat, curDate)
 	if err != nil {
 		return false, err
 	}
-	return (date.After(from) && date.Before(to)) || (from == date || to == date), nil
+	return TimeWithinRange(from, to, date), nil
 }
 
 //copy from helpers
 func OnlyTimeWithinRange(fromTime, toTime, curTime string) (bool, error) {
-	fromTimeParsed, err := time.Parse("15:04:05", fromTime)
+	fromTimeParsed, err := time.Parse(TimeFormat, fromTime)
 	if err != nil {
 		return false, err
 	}
-	toTimeParsed, err := time.Parse("15:04:05", toTime)
+	toTimeParsed, err := time.Parse(TimeFormat, toTime)
 	if err != nil {
 		return false, err
 	}
-	curTimeParsed, err := time.Parse("15:04:05", curTime)
+	curTimeParsed, err := time.Parse(TimeFormat, curTime)
 	if err != nil {
 		return false, err
 	}
@@ -144,7 +149,7 @@ func OnlyTimeWithinRange(fromTime, toTime, curTime string) (bool, error) {
 
 //copy from helpers
 func TimeWithinRange(from, to, date time.Time) bool {
-	return (date.After(from) && date.Before(to)) || (from == date || to == date)
+	return (from == date || to == date) || (date.After(from) && date.Before(to))
 }
 
 //copy from helpers
