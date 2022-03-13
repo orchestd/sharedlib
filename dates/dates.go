@@ -51,7 +51,9 @@ func IsDateInTimeGroup(date time.Time, timeGroup TimeGroup) (bool, error) {
 
 	//test date range
 	if timeGroup.DatesFilterType == "range" && len(timeGroup.Dates) > 1 {
-
+		if len(timeGroup.Dates) == 1 {
+			return false, fmt.Errorf("IsDateInTimeGroup: dates must have 2 values for DatesFilterType = range")
+		}
 		fromDate := timeGroup.Dates[0].Format(DateFormat)
 		toDate := timeGroup.Dates[1].Format(DateFormat)
 		dateF := dateFilter.Format(DateFormat)

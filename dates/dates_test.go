@@ -33,8 +33,13 @@ func TestOnlyDateWithinRange(t *testing.T) {
 		So(err, ShouldBeNil)
 		So(sd, ShouldBeTrue)
 	})
-	Convey("outside range", t, func() {
+	Convey("outside range before", t, func() {
 		sd, err := OnlyDateWithinRange("2022-03-01", "2022-03-03", "2022-03-10")
+		So(err, ShouldBeNil)
+		So(sd, ShouldBeFalse)
+	})
+	Convey("outside range after", t, func() {
+		sd, err := OnlyDateWithinRange("2022-03-11", "2022-03-03", "2022-03-10")
 		So(err, ShouldBeNil)
 		So(sd, ShouldBeFalse)
 	})
@@ -68,6 +73,17 @@ func TestIsDateInTimeGroup(t *testing.T) {
 			DatesFilterType:  "list",
 			DatesFilterFrame: "calendar",
 			TimeRange:        []string{"16:00", "18:00"},
+		}
+		d, _ := time.Parse(DateTimeFormat, "2022-03-03 15:15:15")
+		sd, err := IsDateInTimeGroup(d, timeGroup)
+		So(err, ShouldBeNil)
+		So(sd, ShouldBeFalse)
+	})
+	Convey("test only hours false", t, func() {
+		timeGroup := TimeGroup{
+			DatesFilterType:  "list",
+			DatesFilterFrame: "calendar",
+			TimeRange:        []string{"13:00", "15:00"},
 		}
 		d, _ := time.Parse(DateTimeFormat, "2022-03-03 15:15:15")
 		sd, err := IsDateInTimeGroup(d, timeGroup)
@@ -111,6 +127,18 @@ func TestIsDateInTimeGroup(t *testing.T) {
 		sd, err := IsDateInTimeGroup(d, timeGroup)
 		So(err, ShouldBeNil)
 		So(sd, ShouldBeTrue)
+	})
+	Convey("test only day of week by dueDate date true", t, func() {
+		timeGroup := TimeGroup{
+			DatesFilterType:  "list",
+			DatesFilterFrame: "dueDate",
+			DaysOfWeek:       []string{"Thursday"},
+			DueDateEndTime:   "05:00:00",
+		}
+		d, _ := time.Parse(DateTimeFormat, "2022-03-03 01:15:15")
+		sd, err := IsDateInTimeGroup(d, timeGroup)
+		So(err, ShouldBeNil)
+		So(sd, ShouldBeFalse)
 	})
 	Convey("test only day of week by dueDate date false", t, func() {
 		timeGroup := TimeGroup{
