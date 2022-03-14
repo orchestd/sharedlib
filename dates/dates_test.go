@@ -63,6 +63,17 @@ func TestIsDateInTimeGroup(t *testing.T) {
 			DatesFilterFrame: "calendar",
 			TimeRange:        []string{"15:00", "18:00"},
 		}
+		d, _ := time.Parse(DateTimeMsFormat, "2022-03-03 17:59:59.500")
+		sd, err := IsDateInTimeGroup(d, timeGroup)
+		So(err, ShouldBeNil)
+		So(sd, ShouldBeTrue)
+	})
+	Convey("test only hours true", t, func() {
+		timeGroup := TimeGroup{
+			DatesFilterType:  "list",
+			DatesFilterFrame: "calendar",
+			TimeRange:        []string{"15:00", "18:00"},
+		}
 		d, _ := time.Parse(DateTimeFormat, "2022-03-03 15:15:15")
 		sd, err := IsDateInTimeGroup(d, timeGroup)
 		So(err, ShouldBeNil)

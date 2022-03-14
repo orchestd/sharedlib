@@ -8,6 +8,7 @@ import (
 const DateFormat = "2006-01-02"
 const TimeFormat = "15:04:05"
 const DateTimeFormat = "2006-01-02 15:04:05"
+const DateTimeMsFormat = "2006-01-02 15:04:05.000"
 
 type TimeGroup struct {
 	Dates            []time.Time
