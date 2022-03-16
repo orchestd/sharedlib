@@ -166,12 +166,10 @@ func TestIsDateInTimeGroup(t *testing.T) {
 
 	//date range calendar
 	Convey("test only date range true", t, func() {
-		r1, _ := time.Parse(DateFormat, "2022-03-01")
-		r2, _ := time.Parse(DateFormat, "2022-03-05")
 		timeGroup := TimeGroup{
 			DatesFilterType:  "range",
 			DatesFilterFrame: "calendar",
-			Dates:            []time.Time{r1, r2},
+			Dates:            []string{"2022-03-01", "2022-03-05"},
 		}
 		d, _ := time.Parse(DateTimeFormat, "2022-03-03 15:15:15")
 		sd, err := IsDateInTimeGroup(d, timeGroup)
@@ -179,12 +177,10 @@ func TestIsDateInTimeGroup(t *testing.T) {
 		So(sd, ShouldBeTrue)
 	})
 	Convey("test only date range false", t, func() {
-		r1, _ := time.Parse(DateTimeFormat, "2022-03-01 15:15:15")
-		r2, _ := time.Parse(DateTimeFormat, "2022-03-05 15:15:15")
 		timeGroup := TimeGroup{
 			DatesFilterType:  "range",
 			DatesFilterFrame: "calendar",
-			Dates:            []time.Time{r1, r2},
+			Dates:            []string{"2022-03-01", "2022-03-05"},
 		}
 		d, _ := time.Parse(DateTimeFormat, "2022-03-06 15:15:15")
 		sd, err := IsDateInTimeGroup(d, timeGroup)
@@ -194,12 +190,10 @@ func TestIsDateInTimeGroup(t *testing.T) {
 
 	//date range dueDate
 	Convey("test only date range true", t, func() {
-		r1, _ := time.Parse(DateFormat, "2022-03-01")
-		r2, _ := time.Parse(DateFormat, "2022-03-05")
 		timeGroup := TimeGroup{
 			DatesFilterType:  "range",
 			DatesFilterFrame: "dueDate",
-			Dates:            []time.Time{r1, r2},
+			Dates:            []string{"2022-03-01", "2022-03-05"},
 			DueDateEndTime:   "05:00:00",
 		}
 		d, _ := time.Parse(DateTimeFormat, "2022-03-03 15:15:15")
@@ -208,12 +202,10 @@ func TestIsDateInTimeGroup(t *testing.T) {
 		So(sd, ShouldBeTrue)
 	})
 	Convey("test only date range false", t, func() {
-		r1, _ := time.Parse(DateFormat, "2022-03-01")
-		r2, _ := time.Parse(DateFormat, "2022-03-05")
 		timeGroup := TimeGroup{
 			DatesFilterType:  "range",
 			DatesFilterFrame: "dueDate",
-			Dates:            []time.Time{r1, r2},
+			Dates:            []string{"2022-03-01", "2022-03-05"},
 			DueDateEndTime:   "05:00:00",
 		}
 		d, _ := time.Parse(DateTimeFormat, "2022-03-06 15:15:15")
@@ -224,12 +216,10 @@ func TestIsDateInTimeGroup(t *testing.T) {
 
 	//date list calendar
 	Convey("test only date list true", t, func() {
-		r1, _ := time.Parse(DateFormat, "2022-03-01")
-		r2, _ := time.Parse(DateFormat, "2022-03-05")
 		timeGroup := TimeGroup{
 			DatesFilterType:  "list",
 			DatesFilterFrame: "calendar",
-			Dates:            []time.Time{r1, r2},
+			Dates:            []string{"2022-03-01", "2022-03-05"},
 		}
 		d, _ := time.Parse(DateTimeFormat, "2022-03-01 15:15:15")
 		sd, err := IsDateInTimeGroup(d, timeGroup)
@@ -237,12 +227,10 @@ func TestIsDateInTimeGroup(t *testing.T) {
 		So(sd, ShouldBeTrue)
 	})
 	Convey("test only date list false", t, func() {
-		r1, _ := time.Parse(DateFormat, "2022-03-01")
-		r2, _ := time.Parse(DateFormat, "2022-03-05")
 		timeGroup := TimeGroup{
 			DatesFilterType:  "list",
 			DatesFilterFrame: "calendar",
-			Dates:            []time.Time{r1, r2},
+			Dates:            []string{"2022-03-01", "2022-03-05"},
 		}
 		d, _ := time.Parse(DateTimeFormat, "2022-03-03 15:15:15")
 		sd, err := IsDateInTimeGroup(d, timeGroup)
@@ -252,12 +240,10 @@ func TestIsDateInTimeGroup(t *testing.T) {
 
 	//date list dueDate
 	Convey("test only date list true", t, func() {
-		r1, _ := time.Parse(DateFormat, "2022-03-01")
-		r2, _ := time.Parse(DateFormat, "2022-03-05")
 		timeGroup := TimeGroup{
 			DatesFilterType:  "list",
 			DatesFilterFrame: "dueDate",
-			Dates:            []time.Time{r1, r2},
+			Dates:            []string{"2022-03-01", "2022-03-05"},
 			DueDateEndTime:   "05:00:00",
 		}
 		d, _ := time.Parse(DateTimeFormat, "2022-03-02 01:15:15")
@@ -266,12 +252,10 @@ func TestIsDateInTimeGroup(t *testing.T) {
 		So(sd, ShouldBeTrue)
 	})
 	Convey("test only date list false", t, func() {
-		r1, _ := time.Parse(DateFormat, "2022-03-01")
-		r2, _ := time.Parse(DateFormat, "2022-03-05")
 		timeGroup := TimeGroup{
 			DatesFilterType:  "list",
 			DatesFilterFrame: "dueDate",
-			Dates:            []time.Time{r1, r2},
+			Dates:            []string{"2022-03-01", "2022-03-05"},
 			DueDateEndTime:   "05:00:00",
 		}
 		d, _ := time.Parse(DateTimeFormat, "2022-03-02 11:15:15")
