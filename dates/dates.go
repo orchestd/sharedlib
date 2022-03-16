@@ -11,7 +11,7 @@ const DateTimeFormat = "2006-01-02 15:04:05"
 const DateTimeMsFormat = "2006-01-02 15:04:05.000"
 
 type TimeGroup struct {
-	Dates            []time.Time
+	Dates            []string
 	DatesFilterType  string
 	DatesFilterFrame string
 	TimeRange        []string
@@ -55,8 +55,8 @@ func IsDateInTimeGroup(date time.Time, timeGroup TimeGroup) (bool, error) {
 		if len(timeGroup.Dates) == 1 {
 			return false, fmt.Errorf("IsDateInTimeGroup: dates must have 2 values for DatesFilterType = range")
 		}
-		fromDate := timeGroup.Dates[0].Format(DateFormat)
-		toDate := timeGroup.Dates[1].Format(DateFormat)
+		fromDate := timeGroup.Dates[0]
+		toDate := timeGroup.Dates[1]
 		dateF := dateFilter.Format(DateFormat)
 		ok, err := OnlyDateWithinRange(dateF, fromDate, toDate)
 		if err != nil {
@@ -71,7 +71,11 @@ func IsDateInTimeGroup(date time.Time, timeGroup TimeGroup) (bool, error) {
 	if timeGroup.DatesFilterType == "list" && len(timeGroup.Dates) > 0 {
 		found := false
 		for _, d := range timeGroup.Dates {
-			if DateEqual(d, dateFilter) {
+			dt, err := time.Parse(DateFormat, d)
+			if err != nil{
+				return false, err
+			}
+			if DateEqual(dt, dateFilter) {
 				found = true
 				break
 			}
