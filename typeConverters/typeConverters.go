@@ -37,10 +37,6 @@ func InterfaceToInt64(i interface{}) (int64, error) {
 	}
 }
 
-func BackQuote(object string) string {
-	return "`" + object + "`"
-}
-
 func MapInterfaceToMapString(interfaceMap map[string]interface{}) map[string]string {
 	stringMap := make(map[string]string)
 	for key, val := range interfaceMap {
