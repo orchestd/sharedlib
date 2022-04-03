@@ -1,4 +1,4 @@
-package converters
+package typeConverters
 
 // copy from helpers
 
@@ -39,12 +39,6 @@ func InterfaceToInt64(i interface{}) (int64, error) {
 
 func BackQuote(object string) string {
 	return "`" + object + "`"
-}
-
-func CreateStatusMap(key string, value interface{}) map[string]interface{} {
-	m := make(map[string]interface{})
-	m[key] = value
-	return m
 }
 
 func MapInterfaceToMapString(interfaceMap map[string]interface{}) map[string]string {
