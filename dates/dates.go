@@ -165,3 +165,31 @@ func DateEqual(date1, date2 time.Time) bool {
 	y2, m2, d2 := date2.Date()
 	return y1 == y2 && m1 == m2 && d1 == d2
 }
+
+func DayAndMonthEqual(date1, date2 time.Time) bool {
+	_, m1, d1 := date1.Date()
+	_, m2, d2 := date2.Date()
+	return m1 == m2 && d1 == d2
+}
+
+func MonthEqual(date1, date2 time.Time) bool {
+	_, m1, _ := date1.Date()
+	_, m2, _ := date2.Date()
+	return m1 == m2
+}
+
+func MinDate(d1 time.Time, d2 time.Time) time.Time {
+	if d1.Before(d2) {
+		return d1
+	} else {
+		return d2
+	}
+}
+
+func MaxDate(d1 time.Time, d2 time.Time) time.Time {
+	if d1.After(d2) {
+		return d1
+	} else {
+		return d2
+	}
+}
