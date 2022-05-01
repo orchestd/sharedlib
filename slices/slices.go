@@ -48,3 +48,12 @@ func GetStringSliceIntersection(s1, s2 []string) (inter []string) {
 	}
 	return
 }
+
+func IsStrExist(array []string, predicate string) bool {
+	for _, e := range array {
+		if e == predicate {
+			return true
+		}
+	}
+	return false
+}
