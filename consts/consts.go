@@ -1,7 +1,7 @@
 package consts
 
 const (
-	DockerNameEnv                  = "DOCKER_NAME"
+	ServiceNameEnv                 = "SERVICE_NAME"
 	HeilaEnv                       = "HEILA_ENV"
 	DbHostEnv                      = "DB_HOST"
 	DockerName                     = "dockerName"
