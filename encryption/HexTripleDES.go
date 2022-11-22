@@ -4,35 +4,41 @@ import (
 	"bytes"
 	"crypto/cipher"
 	"crypto/des"
+	"encoding/hex"
+	"fmt"
 )
 
-func TripleDesEncrypt(key, data []byte) ([]byte, error) {
+func TripleDesEncrypt(keyStr, dataStr string) (string, error) {
+	key := []byte(keyStr)
+	data := []byte(dataStr)
 	block, err := des.NewTripleDESCipher(key)
 	if err != nil {
-		return nil, err
+		return "", err
 	}
-	ciphertext := key
-	iv := ciphertext[:des.BlockSize]
+	iv := key[:des.BlockSize]
 	origData := PKCS5Padding(data, block.BlockSize())
 	mode := cipher.NewCBCEncrypter(block, iv)
 	encrypted := make([]byte, len(origData))
 	mode.CryptBlocks(encrypted, origData)
-	return encrypted, nil
+	return fmt.Sprintf("%x", encrypted), nil
 }
 
-func TripleDesDecrypt(key, data []byte) ([]byte, error) {
+func TripleDesDecrypt(keyStr, dataStr string) (string, error) {
+	key := []byte(keyStr)
+	data, err := hex.DecodeString(dataStr)
+	if err != nil {
+		return "", err
+	}
 	block, err := des.NewTripleDESCipher(key)
 	if err != nil {
-		return nil, err
+		return "", err
 	}
-	ciphertext := key
-	iv := ciphertext[:des.BlockSize]
-
+	iv := key[:des.BlockSize]
 	decrypter := cipher.NewCBCDecrypter(block, iv)
 	decrypted := make([]byte, len(data))
 	decrypter.CryptBlocks(decrypted, data)
 	decrypted = PKCS5UnPadding(decrypted)
-	return decrypted, nil
+	return fmt.Sprintf("%s", decrypted), nil
 }
 
 func PKCS5Padding(ciphertext []byte, blockSize int) []byte {
