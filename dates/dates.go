@@ -72,7 +72,7 @@ func IsDateInTimeGroup(date time.Time, timeGroup TimeGroup) (bool, error) {
 		found := false
 		for _, d := range timeGroup.Dates {
 			dt, err := time.Parse(DateFormat, d)
-			if err != nil{
+			if err != nil {
 				return false, err
 			}
 			if DateEqual(dt, dateFilter) {
@@ -191,5 +191,11 @@ func MaxDate(d1 time.Time, d2 time.Time) time.Time {
 		return d1
 	} else {
 		return d2
+	}
+}
+
+func SetSameLocale(time1 time.Time, time2 *time.Time) {
+	if time1.Location() != time2.Location() {
+		*time2 = time.Date(time2.Year(), time2.Month(), time2.Day(), time2.Hour(), time2.Minute(), time2.Second(), time2.Nanosecond(), time1.Location())
 	}
 }
