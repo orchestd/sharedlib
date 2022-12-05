@@ -19,6 +19,21 @@ type TimeGroup struct {
 	DueDateEndTime   string
 }
 
+// supported timeOfDay = hh:mm  || hh:mm:ss
+func SetTimeOfDay(date time.Time, timeOfDay string) (time.Time, error) {
+	if len(timeOfDay) == 5 {
+		timeOfDay = timeOfDay + ":00"
+	} else if len(timeOfDay) != 7 {
+		return time.Time{}, fmt.Errorf("SetTimeOfDay: unsupported format: %s,supported format hh:mm || hh:mm:ss", timeOfDay)
+	}
+	datePlusTime, err := time.Parse(DateTimeFormat, date.Format(DateFormat)+" "+timeOfDay)
+	if err != nil {
+		return time.Time{}, err
+	}
+	return datePlusTime, nil
+
+}
+
 func IsDateInTimeGroup(date time.Time, timeGroup TimeGroup) (bool, error) {
 	if date.IsZero() {
 		return false, fmt.Errorf("IsDateInTimeGroup: date must have value")
