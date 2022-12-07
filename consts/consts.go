@@ -19,4 +19,9 @@ const (
 	CacheStorageSetterMiddlewares  = "cacheStorageSetterMiddlewares"
 	MonitorTags                    = "monitorTags"
 	DiscoveryServiceProvider       = "discoveryServiceProvider"
+
+	EnvLocal = "LOCAL"
+	EnvQA    = "QA"
+	EnvStage = "STAGE"
+	EnvProd  = "PROD"
 )
