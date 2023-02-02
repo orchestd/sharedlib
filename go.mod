@@ -1,4 +1,4 @@
-module bitbucket.org/HeilaSystems/sharedlib
+module github.com/orchestd/sharedlib
 
 go 1.16
 
