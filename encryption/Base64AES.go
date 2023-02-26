@@ -9,30 +9,27 @@ import (
 	"io"
 )
 
-func Encrypt(data, key string) (string, error) {
+func checkKey(key string) error {
 	if key == "" {
-		return "", fmt.Errorf("the key cannot be empty")
+		return fmt.Errorf("the key cannot be empty")
 	} else if len(key) > 16 {
-		return "", fmt.Errorf("the key must be smaller than 16 characters %v", key)
-	} else {
-		var res string
-		if tmp, err := encryptBase64AES([]byte(key), data); err != nil {
-			return "", fmt.Errorf("cannot encrypt data. " + err.Error())
-		} else {
-			res = tmp
-		}
-		return res, nil
+		return fmt.Errorf("the key must be smaller than 16 characters %v", key)
 	}
+	return nil
 }
 
-func encryptBase64AES(key []byte, text string) (string, error) {
+func EncryptBase64AES(key string, text string) (string, error) {
+	err := checkKey(key)
+	if err != nil {
+		return "", err
+	}
 	plaintext := []byte(text)
-	block, err := aes.NewCipher(key)
+	block, err := aes.NewCipher([]byte(key))
 	if err != nil {
 		return "", err
 	}
 
-	// The IV needs to be unique, but not secure. Therefore it's common to
+	// The IV needs to be unique, but not secure. Therefore it's common toencryptBase64AES
 	// include it at the beginning of the ciphertext.
 	ciphertext := make([]byte, aes.BlockSize+len(plaintext))
 	iv := ciphertext[:aes.BlockSize]
@@ -46,26 +43,14 @@ func encryptBase64AES(key []byte, text string) (string, error) {
 	return base64.URLEncoding.EncodeToString(ciphertext), nil
 }
 
-func Decrypt(encrypted, key string) (string, error) {
-	if key == "" {
-		return "", fmt.Errorf("the key cannot be empty")
-	} else if len(key) > 16 {
-		return "", fmt.Errorf("the key must be smaller than 16 characters %v", key)
-	} else {
-		var res string
-		if tmp, err := decryptBase64AES([]byte(key), encrypted); err != nil {
-			return "", fmt.Errorf("cannot decrypt data. " + err.Error())
-		} else {
-			res = tmp
-		}
-		return res, nil
+func DecryptBase64AES(key string, cryptoText string) (string, error) {
+	err := checkKey(key)
+	if err != nil {
+		return "", err
 	}
-}
-
-func decryptBase64AES(key []byte, cryptoText string) (string, error) {
 	ciphertext, _ := base64.URLEncoding.DecodeString(cryptoText)
 
-	block, err := aes.NewCipher(key)
+	block, err := aes.NewCipher([]byte(key))
 	if err != nil {
 		return "", err
 	}
