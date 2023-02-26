@@ -7,9 +7,44 @@ import (
 	"encoding/base64"
 	"fmt"
 	"io"
+	"strconv"
 )
 
-func EncryptBase64AES(key []byte, text string) (string, error) {
+func fullEncryptKey(key string) (string, error) {
+	if len(key) >= 10 {
+		var bt []byte
+		pwSecretBase := key[:10]
+		bt = append(bt, 33)
+		bt = append(bt, ([]byte(pwSecretBase))...)
+		bt = append(bt, ([]byte(strconv.Itoa(2018)))...)
+		bt = append(bt, 33)
+		return string(bt), nil
+	} else {
+		return "", fmt.Errorf("the key must be bigger than 10 characters %v", key)
+	}
+}
+
+func Encrypt(data, key string) (string, error) {
+	if key == "" {
+		return "", fmt.Errorf("the key cannot be empty")
+	} else if len(key) > 16 {
+		return "", fmt.Errorf("the key must be smaller than 16 characters %v", key)
+	} else {
+		var res string
+		if EncryptKey, err := fullEncryptKey(key); err != nil {
+			return "", fmt.Errorf("cannot get the fullEncryptKey. " + err.Error())
+		} else {
+			if tmp, err := encryptBase64AES([]byte(EncryptKey), data); err != nil {
+				return "", fmt.Errorf("cannot encrypt data. " + err.Error())
+			} else {
+				res = tmp
+			}
+			return res, nil
+		}
+	}
+}
+
+func encryptBase64AES(key []byte, text string) (string, error) {
 	plaintext := []byte(text)
 	block, err := aes.NewCipher(key)
 	if err != nil {
@@ -30,7 +65,28 @@ func EncryptBase64AES(key []byte, text string) (string, error) {
 	return base64.URLEncoding.EncodeToString(ciphertext), nil
 }
 
-func DecryptBase64AES(key []byte, cryptoText string) (string, error) {
+func Decrypt(encrypted, key string) (string, error) {
+	if key == "" {
+		return "", fmt.Errorf("the key cannot be empty")
+	} else if len(key) > 16 {
+		return "", fmt.Errorf("the key must be smaller than 16 characters %v", key)
+	} else {
+		var res string
+		if EncryptKey, err := fullEncryptKey(key); err != nil {
+			return "", fmt.Errorf("cannot get the fullEncryptKey. " + err.Error())
+		} else {
+			if tmp, err := decryptBase64AES([]byte(EncryptKey), encrypted); err != nil {
+				return "", fmt.Errorf("cannot decrypt data. " + err.Error())
+			} else {
+				res = tmp
+			}
+			//LoggingHandler("EncryptKey from Decrypt func: ", EncryptKey)
+			return res, nil
+		}
+	}
+}
+
+func decryptBase64AES(key []byte, cryptoText string) (string, error) {
 	ciphertext, _ := base64.URLEncoding.DecodeString(cryptoText)
 
 	block, err := aes.NewCipher(key)
