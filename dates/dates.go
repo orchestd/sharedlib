@@ -218,9 +218,8 @@ func SetSameLocale(time1 time.Time, time2 *time.Time) {
 type FormattedDate time.Time
 
 func (fd FormattedDate) MarshalJSON() ([]byte, error) {
-	//do your serializing here
-	stamp := fmt.Sprintf("\"%s\"", time.Time(fd).Format(DateTimeFormat))
-	return []byte(stamp), nil
+	formatted := fmt.Sprintf("\"%s\"", time.Time(fd).Format(DateTimeFormat))
+	return []byte(formatted), nil
 }
 
 func (fd FormattedDate) IsZero() bool {
