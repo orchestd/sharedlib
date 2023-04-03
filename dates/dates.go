@@ -146,7 +146,7 @@ func OnlyDateWithinRange(curDate, fromDate, toDate string) (bool, error) {
 	return TimeWithinRange(from, to, date), nil
 }
 
-//copy from helpers
+// copy from helpers
 func OnlyTimeWithinRange(fromTime, toTime, curTime string) (bool, error) {
 	fromTimeParsed, err := time.Parse(TimeFormat, fromTime)
 	if err != nil {
@@ -169,12 +169,12 @@ func OnlyTimeWithinRange(fromTime, toTime, curTime string) (bool, error) {
 	return TimeWithinRange(fromTimeParsed, toTimeParsed, curTimeParsed), nil
 }
 
-//copy from helpers
+// copy from helpers
 func TimeWithinRange(from, to, date time.Time) bool {
 	return (from == date || to == date) || (date.After(from) && date.Before(to))
 }
 
-//copy from helpers
+// copy from helpers
 func DateEqual(date1, date2 time.Time) bool {
 	y1, m1, d1 := date1.Date()
 	y2, m2, d2 := date2.Date()
@@ -213,4 +213,23 @@ func SetSameLocale(time1 time.Time, time2 *time.Time) {
 	if time1.Location() != time2.Location() {
 		*time2 = time.Date(time2.Year(), time2.Month(), time2.Day(), time2.Hour(), time2.Minute(), time2.Second(), time2.Nanosecond(), time1.Location())
 	}
+}
+
+type FormattedDate time.Time
+
+func (fd FormattedDate) MarshalJSON() ([]byte, error) {
+	formatted := fmt.Sprintf("\"%s\"", time.Time(fd).Format(DateTimeFormat))
+	return []byte(formatted), nil
+}
+
+func (fd FormattedDate) IsZero() bool {
+	return time.Time(fd).IsZero()
+}
+
+func (fd FormattedDate) Add(d time.Duration) time.Time {
+	return time.Time(fd).Add(d)
+}
+
+func (fd FormattedDate) AsTime() time.Time {
+	return time.Time(fd)
 }
