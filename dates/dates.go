@@ -2,6 +2,7 @@ package dates
 
 import (
 	"fmt"
+	"strings"
 	"time"
 )
 
@@ -220,6 +221,20 @@ type FormattedDate time.Time
 func (fd FormattedDate) MarshalJSON() ([]byte, error) {
 	formatted := fmt.Sprintf("\"%s\"", time.Time(fd).Format(DateTimeFormat))
 	return []byte(formatted), nil
+}
+
+func (fd *FormattedDate) UnmarshalJSON(data []byte) error {
+	value := strings.Trim(string(data), `"`)
+	if value == "" || value == "null" {
+		return nil
+	}
+
+	t, err := time.Parse(DateTimeFormat, value)
+	if err != nil {
+		return err
+	}
+	*fd = FormattedDate(t)
+	return nil
 }
 
 func (fd FormattedDate) IsZero() bool {
