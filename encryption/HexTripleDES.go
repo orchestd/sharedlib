@@ -37,7 +37,10 @@ func TripleDesDecrypt(keyStr, dataStr string) (string, error) {
 	decrypter := cipher.NewCBCDecrypter(block, iv)
 	decrypted := make([]byte, len(data))
 	decrypter.CryptBlocks(decrypted, data)
-	decrypted = PKCS5UnPadding(decrypted)
+	decrypted, err = PKCS5UnPadding(decrypted)
+	if err != nil {
+		return "", err
+	}
 	return fmt.Sprintf("%s", decrypted), nil
 }
 
@@ -47,8 +50,13 @@ func PKCS5Padding(ciphertext []byte, blockSize int) []byte {
 	return append(ciphertext, padtext...)
 }
 
-func PKCS5UnPadding(origData []byte) []byte {
+func PKCS5UnPadding(origData []byte) ([]byte, error) {
 	length := len(origData)
 	unpadding := int(origData[length-1])
-	return origData[:(length - unpadding)]
+
+	if length <= unpadding {
+		return nil, fmt.Errorf("invalid hash length for this key")
+	}
+
+	return origData[:(length - unpadding)], nil
 }
