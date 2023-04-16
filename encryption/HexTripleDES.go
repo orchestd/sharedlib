@@ -33,12 +33,30 @@ func TripleDesDecrypt(keyStr, dataStr string) (string, error) {
 	if err != nil {
 		return "", err
 	}
+
 	iv := key[:des.BlockSize]
 	decrypter := cipher.NewCBCDecrypter(block, iv)
 	decrypted := make([]byte, len(data))
+
+	decrypted, err = decrypt(decrypter, decrypted, data)
+	if err != nil {
+		return "", err
+	}
+
+	return fmt.Sprintf("%s", decrypted), nil
+}
+
+func decrypt(decrypter cipher.BlockMode, decrypted, data []byte) (d []byte, err error) {
+	defer func() {
+		if r := recover(); r != nil {
+			err = fmt.Errorf("Recovered from panic, library: sharedlib, func: decrypt, %v", r)
+		}
+	}()
+
 	decrypter.CryptBlocks(decrypted, data)
 	decrypted = PKCS5UnPadding(decrypted)
-	return fmt.Sprintf("%s", decrypted), nil
+
+	return decrypted, nil
 }
 
 func PKCS5Padding(ciphertext []byte, blockSize int) []byte {
