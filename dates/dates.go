@@ -1,6 +1,7 @@
 package dates
 
 import (
+	"encoding/json"
 	"fmt"
 	"strings"
 	"time"
@@ -219,6 +220,9 @@ func SetSameLocale(time1 time.Time, time2 *time.Time) {
 type FormattedDate time.Time
 
 func (fd FormattedDate) MarshalJSON() ([]byte, error) {
+	if time.Time(fd).IsZero() {
+		return json.Marshal(nil)
+	}
 	formatted := fmt.Sprintf("\"%s\"", time.Time(fd).Format(DateTimeFormat))
 	return []byte(formatted), nil
 }
