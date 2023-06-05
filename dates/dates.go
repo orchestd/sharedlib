@@ -175,6 +175,9 @@ func OnlyTimeWithinRange(fromTime, toTime, curTime string) (bool, error) {
 
 // copy from helpers
 func TimeWithinRange(from, to, date time.Time) bool {
+	if from.Hour() > to.Hour() {
+		from = from.AddDate(0, 0, 1)
+	}
 	return (from == date || to == date) || (date.After(from) && date.Before(to))
 }
 
