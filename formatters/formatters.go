@@ -10,7 +10,7 @@ func countDecimalLen(price float64) int {
 	return len(strings.Split(fmt.Sprint(price), ".")[1])
 }
 
-func RoundByDecimals(price float64, decimals int) float64 {
+func Round(price float64, decimals int) float64 {
 	decimalsAmount := countDecimalLen(price)
 	if decimalsAmount < decimals {
 		decimals = decimalsAmount
