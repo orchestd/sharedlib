@@ -1,5 +1,7 @@
 package slices
 
+import "strings"
+
 type UniqueIdSlice []string
 
 func (u UniqueIdSlice) Add(newId string) UniqueIdSlice {
@@ -52,6 +54,15 @@ func GetStringSliceIntersection(s1, s2 []string) (inter []string) {
 func IsStrExist(array []string, predicate string) bool {
 	for _, e := range array {
 		if e == predicate {
+			return true
+		}
+	}
+	return false
+}
+
+func IsStrExistCI(array []string, s string) bool {
+	for _, v := range array {
+		if strings.EqualFold(v, s) {
 			return true
 		}
 	}
