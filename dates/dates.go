@@ -178,6 +178,12 @@ func TimeWithinRange(from, to, date time.Time) bool {
 	return (from == date || to == date) || (date.After(from) && date.Before(to))
 }
 
+// date.After(from) is "from" time (exclusive).
+// !date.After(to) is "to" time (inclusive).
+func TimeBetween(from, to, date time.Time) bool {
+	return date.After(from) && !date.After(to)
+}
+
 // copy from helpers
 func DateEqual(date1, date2 time.Time) bool {
 	y1, m1, d1 := date1.Date()

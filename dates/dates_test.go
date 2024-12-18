@@ -29,7 +29,7 @@ func TestGetShiftDate(t *testing.T) {
 
 func TestOnlyDateWithinRange(t *testing.T) {
 	Convey("within range", t, func() {
-		sd, err := OnlyDateWithinRange("2022-03-04", "2022-03-03", "2022-03-10", )
+		sd, err := OnlyDateWithinRange("2022-03-04", "2022-03-03", "2022-03-10")
 		So(err, ShouldBeNil)
 		So(sd, ShouldBeTrue)
 	})
@@ -44,12 +44,12 @@ func TestOnlyDateWithinRange(t *testing.T) {
 		So(sd, ShouldBeFalse)
 	})
 	Convey("within range start", t, func() {
-		sd, err := OnlyDateWithinRange("2022-03-03", "2022-03-03", "2022-03-10", )
+		sd, err := OnlyDateWithinRange("2022-03-03", "2022-03-03", "2022-03-10")
 		So(err, ShouldBeNil)
 		So(sd, ShouldBeTrue)
 	})
 	Convey("within range end", t, func() {
-		sd, err := OnlyDateWithinRange("2022-03-10", "2022-03-03", "2022-03-10", )
+		sd, err := OnlyDateWithinRange("2022-03-10", "2022-03-03", "2022-03-10")
 		So(err, ShouldBeNil)
 		So(sd, ShouldBeTrue)
 	})
@@ -262,5 +262,29 @@ func TestIsDateInTimeGroup(t *testing.T) {
 		sd, err := IsDateInTimeGroup(d, timeGroup)
 		So(err, ShouldBeNil)
 		So(sd, ShouldBeFalse)
+	})
+}
+
+func TestTimeBetween(t *testing.T) {
+	Convey("Test time between where Date is from", t, func() {
+		from, _ := time.Parse(DateTimeFormat, "2024-12-19 00:00:00")
+		to, _ := time.Parse(DateTimeFormat, "2024-12-19 23:00:00")
+		date := from
+		res := TimeBetween(from, to, date)
+		So(res, ShouldBeFalse)
+	})
+	Convey("Test time between where Date is to", t, func() {
+		from, _ := time.Parse(DateTimeFormat, "2024-12-19 00:00:00")
+		to, _ := time.Parse(DateTimeFormat, "2024-12-19 02:00:00")
+		date := to
+		res := TimeBetween(from, to, date)
+		So(res, ShouldBeTrue)
+	})
+	Convey("Test time between where Date is to", t, func() {
+		from, _ := time.Parse(DateTimeFormat, "2024-12-19 00:00:00")
+		to, _ := time.Parse(DateTimeFormat, "2024-12-19 02:00:00")
+		date, _ := time.Parse(DateTimeFormat, "2024-12-19 01:00:00")
+		res := TimeBetween(from, to, date)
+		So(res, ShouldBeTrue)
 	})
 }
