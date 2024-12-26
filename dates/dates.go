@@ -260,3 +260,14 @@ func (fd FormattedDate) Add(d time.Duration) time.Time {
 func (fd FormattedDate) AsTime() time.Time {
 	return time.Time(fd)
 }
+
+func (fd FormattedDate) Expired(curDate time.Time, dateOnly bool) bool {
+	if dateOnly {
+		y, m, d := curDate.Date()
+		curDate = time.Date(y, m, d, 0, 0, 0, 0, curDate.Location())
+		y, m, d = fd.AsTime().Date()
+		fd = FormattedDate(time.Date(y, m, d, 0, 0, 0, 0, fd.AsTime().Location()))
+	}
+
+	return curDate.After(time.Time(fd)) || curDate.Equal(time.Time(fd))
+}
