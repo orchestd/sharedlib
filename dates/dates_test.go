@@ -301,7 +301,7 @@ func TestExpired(t *testing.T) {
 		curDate, _ := time.Parse(DateTimeFormat, "2024-12-25 12:00:00")
 		expirationDate, _ := time.Parse(DateTimeFormat, "2024-12-25 12:00:00")
 		res := FormattedDate(expirationDate).Expired(curDate, true)
-		So(res, ShouldBeTrue)
+		So(res, ShouldBeFalse)
 	})
 
 	Convey("current date same expiration full but current time lower than expirationDate", t, func() {
@@ -318,7 +318,7 @@ func TestExpired(t *testing.T) {
 		So(res, ShouldBeTrue)
 	})
 
-	Convey("current date same expiration date", t, func() {
+	Convey("expiration date tomorrow current date", t, func() {
 		curDate, _ := time.Parse(DateTimeFormat, "2024-12-25 12:00:00")
 		expirationDate, _ := time.Parse(DateTimeFormat, "2024-12-26 12:00:00")
 		res := FormattedDate(expirationDate).Expired(curDate, true)

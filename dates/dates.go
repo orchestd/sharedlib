@@ -269,5 +269,5 @@ func (fd FormattedDate) Expired(curDate time.Time, dateOnly bool) bool {
 		fd = FormattedDate(time.Date(y, m, d, 0, 0, 0, 0, fd.AsTime().Location()))
 	}
 
-	return curDate.After(time.Time(fd)) || curDate.Equal(time.Time(fd))
+	return curDate.After(time.Time(fd))
 }
